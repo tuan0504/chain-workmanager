@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WorkDatabase {
-    private final WorkDatabaseObservable workerObservable = new WorkDatabaseObservable();
+    private final WorkSpecDatabaseObservable workSpecDatabaseObservable = new WorkSpecDatabaseObservable();
 
     private final ConcurrentHashMap<String, WorkSpec> workSpecsDao = new ConcurrentHashMap<>(); //first : workSpecId , second: WorkSpec
     private final List<Pair<String, String>> dependentWorkIdsDaos = new ArrayList<>(); //first : workSpecId , second: dependent workID
@@ -43,7 +43,7 @@ public class WorkDatabase {
         WorkSpec workSpec = workSpecsDao.get(workSpecId);
         if (workSpec != null && workSpec.state != state) {
             workSpec.state = state;
-            workerObservable.stateChangeInWorkSpec(workSpec);
+            workSpecDatabaseObservable.dataChangeInWorkSpec(workSpec);
         }
     }
 
@@ -52,10 +52,12 @@ public class WorkDatabase {
         return workSpec != null ? workSpec.state : null;
     }
 
-    public void setWorkSpecOutput(String workSpecId, Data output) {
+    public void setWorkSpecOutput(String workSpecId, WorkInfo.State state, Data output) {
         WorkSpec workSpec = workSpecsDao.get(workSpecId);
-        if (workSpec != null) {
+        if (workSpec != null && (workSpec.state != state || workSpec.output != output)) {
+            workSpec.state = state;
             workSpec.output = output;
+            workSpecDatabaseObservable.dataChangeInWorkSpec(workSpec);
         }
     }
 
@@ -179,7 +181,7 @@ public class WorkDatabase {
     //begin : WorkInfo Observable
     public ObservableItem<WorkInfo> getWorkInfoById(String workSpecId) {
         final ObservableItem<WorkInfo> observableItem = new ObservableItem<>();
-        workerObservable.addObserver((observable, workSpec) -> {
+        workSpecDatabaseObservable.addObserver((observable, workSpec) -> {
             if (workSpec instanceof WorkSpec && workSpecId.equals(((WorkSpec) workSpec).id)) {
                 WorkSpec data = (WorkSpec) workSpec;
                 WorkInfo info = new WorkInfo(UUID.fromString(data.id), data.state, data.output);
@@ -192,11 +194,10 @@ public class WorkDatabase {
 
     public ObservableItem<List<WorkInfo>> getWorkInfoByListIds(List<String> workSpecIds) {
         final ObservableItem<List<WorkInfo>> observableItem = new ObservableItem<>();
-        workerObservable.addObserver((observable, workSpec) -> {
+        workSpecDatabaseObservable.addObserver((observable, workSpec) -> {
             if (workSpec instanceof WorkSpec && workSpecIds.contains(((WorkSpec) workSpec).id)) {
                 boolean isUpdate = false;
-                String workId = ((WorkSpec) workSpec).id;
-                WorkInfo.State state = ((WorkSpec) workSpec).state;
+                WorkSpec changedItem = ((WorkSpec) workSpec);
                 List<WorkInfo> cached = observableItem.getData();
 
                 //Check should we notify update Observable
@@ -204,7 +205,8 @@ public class WorkDatabase {
                     isUpdate = true;
                 } else {
                     for(WorkInfo info : cached) {
-                        if(workId.equals(info.getId().toString()) && state != info.getState()) {
+                        if(changedItem.id.equals(info.getId().toString()) &&
+                            ( changedItem.state != info.getState() || changedItem.output != info.getOutputData())) {
                             isUpdate = true;
                             break;
                         }
@@ -254,8 +256,8 @@ public class WorkDatabase {
     }
 
     //Observable work database
-    private static class WorkDatabaseObservable extends Observable {
-        public void stateChangeInWorkSpec(WorkSpec workSpec) {
+    private static class WorkSpecDatabaseObservable extends Observable {
+        public void dataChangeInWorkSpec(WorkSpec workSpec) {
             setChanged();
             notifyObservers(workSpec);
         }

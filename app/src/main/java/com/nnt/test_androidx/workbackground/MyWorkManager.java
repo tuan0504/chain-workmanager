@@ -54,7 +54,7 @@ public class MyWorkManager {
                 List<WorkInfo> infoList = (List<WorkInfo>) arg;
                 Log.e("TUAN", "print State: " + infoList.size());
                 for(WorkInfo info: infoList) {
-                    Log.e("TUAN", "id : " + info.getId() + " -- state: " + info.getState());
+                    Log.e("TUAN", "state : " + info.getState() + " -- output: " + info.getOutputData());
                 }
             } catch (Exception e) {
                 e.printStackTrace();

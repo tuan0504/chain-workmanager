@@ -128,7 +128,6 @@ public abstract class Worker {
         }
 
         public static final class Failure extends Result {
-            private final Data mOutputData;
 
             public Failure() {
                 this(Data.EMPTY);

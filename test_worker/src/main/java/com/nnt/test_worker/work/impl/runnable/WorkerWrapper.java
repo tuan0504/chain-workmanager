@@ -135,8 +135,9 @@ public class WorkerWrapper implements Runnable {
     }
 
     void setFailedResult(Result.Failure failure) {
-        ArrayList<String> ids = new ArrayList<>();
-        ids.add(mWorkSpecId);
+        mWorkDatabase.setWorkSpecOutput(mWorkSpecId, FAILED, failure.getOutputData());
+
+        ArrayList<String> ids = new ArrayList<>(mWorkDatabase.getDependentWorkIds(mWorkSpecId));
         while (!ids.isEmpty()) {
             String id = ids.remove(0);
             if (mWorkDatabase.getState(id) != CANCELLED) {
@@ -144,7 +145,6 @@ public class WorkerWrapper implements Runnable {
             }
             ids.addAll(mWorkDatabase.getDependentWorkIds(id));
         }
-        mWorkDatabase.setWorkSpecOutput(mWorkSpecId, failure.getOutputData());
     }
 
     private void reschedule() {
@@ -157,8 +157,7 @@ public class WorkerWrapper implements Runnable {
     }
 
     private void setSucceededResult(Result.Success success) {
-        mWorkDatabase.setState(SUCCEEDED, mWorkSpecId);
-        mWorkDatabase.setWorkSpecOutput(mWorkSpecId, success.getOutputData());
+        mWorkDatabase.setWorkSpecOutput(mWorkSpecId, SUCCEEDED, success.getOutputData());
 
         List<String> dependentWorkIds = mWorkDatabase.getDependentWorkIds(mWorkSpecId);
         for (String id : dependentWorkIds) {
