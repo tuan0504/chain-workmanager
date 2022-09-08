@@ -1,8 +1,4 @@
-package com.nnt.test_worker.work;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
+package com.nnt.test_worker.work.datatypes;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,27 +12,27 @@ public final class Data {
     public static final Data EMPTY = new Data.Builder().build();
 
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    Map<String, Object> mValues;
+            Map<String, Object> mValues;
 
     Data() {    // stub required for room
     }
 
-    public Data(@NonNull Data other) {
+    public Data(Data other) {
         mValues = new HashMap<>(other.mValues);
     }
 
-    Data(@NonNull Map<String, ?> values) {
+    Data(Map<String, ?> values) {
         mValues = new HashMap<>(values);
     }
 
     /**
      * Gets the boolean value for the given key.
      *
-     * @param key The key for the argument
+     * @param key          The key for the argument
      * @param defaultValue The default value to return if the key is not found
      * @return The value specified by the key if it exists; the default value otherwise
      */
-    public boolean getBoolean(@NonNull String key, boolean defaultValue) {
+    public boolean getBoolean(String key, boolean defaultValue) {
         Object value = mValues.get(key);
         if (value instanceof Boolean) {
             return (boolean) value;
@@ -51,7 +47,7 @@ public final class Data {
      * @param key The key for the argument
      * @return The value specified by the key if it exists; {@code null} otherwise
      */
-    public @Nullable boolean[] getBooleanArray(@NonNull String key) {
+    public boolean[] getBooleanArray(String key) {
         Object value = mValues.get(key);
         if (value instanceof Boolean[]) {
             Boolean[] array = (Boolean[]) value;
@@ -69,11 +65,11 @@ public final class Data {
     /**
      * Gets the integer value for the given key.
      *
-     * @param key The key for the argument
+     * @param key          The key for the argument
      * @param defaultValue The default value to return if the key is not found
      * @return The value specified by the key if it exists; the default value otherwise
      */
-    public int getInt(@NonNull String key, int defaultValue) {
+    public int getInt(String key, int defaultValue) {
         Object value = mValues.get(key);
         if (value instanceof Integer) {
             return (int) value;
@@ -88,7 +84,7 @@ public final class Data {
      * @param key The key for the argument
      * @return The value specified by the key if it exists; {@code null} otherwise
      */
-    public @Nullable int[] getIntArray(@NonNull String key) {
+    public int[] getIntArray(String key) {
         Object value = mValues.get(key);
         if (value instanceof Integer[]) {
             Integer[] array = (Integer[]) value;
@@ -105,11 +101,11 @@ public final class Data {
     /**
      * Gets the long value for the given key.
      *
-     * @param key The key for the argument
+     * @param key          The key for the argument
      * @param defaultValue The default value to return if the key is not found
      * @return The value specified by the key if it exists; the default value otherwise
      */
-    public long getLong(@NonNull String key, long defaultValue) {
+    public long getLong(String key, long defaultValue) {
         Object value = mValues.get(key);
         if (value instanceof Long) {
             return (long) value;
@@ -124,7 +120,7 @@ public final class Data {
      * @param key The key for the argument
      * @return The value specified by the key if it exists; {@code null} otherwise
      */
-    public @Nullable long[] getLongArray(@NonNull String key) {
+    public long[] getLongArray(String key) {
         Object value = mValues.get(key);
         if (value instanceof Long[]) {
             Long[] array = (Long[]) value;
@@ -141,11 +137,11 @@ public final class Data {
     /**
      * Gets the float value for the given key.
      *
-     * @param key The key for the argument
+     * @param key          The key for the argument
      * @param defaultValue The default value to return if the key is not found
      * @return The value specified by the key if it exists; the default value otherwise
      */
-    public float getFloat(@NonNull String key, float defaultValue) {
+    public float getFloat(String key, float defaultValue) {
         Object value = mValues.get(key);
         if (value instanceof Float) {
             return (float) value;
@@ -160,7 +156,7 @@ public final class Data {
      * @param key The key for the argument
      * @return The value specified by the key if it exists; {@code null} otherwise
      */
-    public @Nullable float[] getFloatArray(@NonNull String key) {
+    public float[] getFloatArray(String key) {
         Object value = mValues.get(key);
         if (value instanceof Float[]) {
             Float[] array = (Float[]) value;
@@ -177,11 +173,11 @@ public final class Data {
     /**
      * Gets the double value for the given key.
      *
-     * @param key The key for the argument
+     * @param key          The key for the argument
      * @param defaultValue The default value to return if the key is not found
      * @return The value specified by the key if it exists; the default value otherwise
      */
-    public double getDouble(@NonNull String key, double defaultValue) {
+    public double getDouble(String key, double defaultValue) {
         Object value = mValues.get(key);
         if (value instanceof Double) {
             return (double) value;
@@ -196,7 +192,7 @@ public final class Data {
      * @param key The key for the argument
      * @return The value specified by the key if it exists; {@code null} otherwise
      */
-    public @Nullable double[] getDoubleArray(@NonNull String key) {
+    public double[] getDoubleArray(String key) {
         Object value = mValues.get(key);
         if (value instanceof Double[]) {
             Double[] array = (Double[]) value;
@@ -216,7 +212,7 @@ public final class Data {
      * @param key The key for the argument
      * @return The value specified by the key if it exists; the default value otherwise
      */
-    public @Nullable String getString(@NonNull String key) {
+    public String getString(String key) {
         Object value = mValues.get(key);
         if (value instanceof String) {
             return (String) value;
@@ -231,7 +227,7 @@ public final class Data {
      * @param key The key for the argument
      * @return The value specified by the key if it exists; {@code null} otherwise
      */
-    public @Nullable String[] getStringArray(@NonNull String key) {
+    public String[] getStringArray(String key) {
         Object value = mValues.get(key);
         if (value instanceof String[]) {
             return (String[]) value;
@@ -246,7 +242,7 @@ public final class Data {
      * @return A {@link Map} of key-value pairs for this object; this Map is unmodifiable and should
      * be used for reads only.
      */
-    public @NonNull Map<String, Object> getKeyValueMap() {
+    public Map<String, Object> getKeyValueMap() {
         return Collections.unmodifiableMap(mValues);
     }
 
@@ -268,7 +264,7 @@ public final class Data {
     }
 
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    static @NonNull Boolean[] convertPrimitiveBooleanArray(@NonNull boolean[] value) {
+    static Boolean[] convertPrimitiveBooleanArray(boolean[] value) {
         Boolean[] returnValue = new Boolean[value.length];
         for (int i = 0; i < value.length; ++i) {
             returnValue[i] = value[i];
@@ -277,7 +273,7 @@ public final class Data {
     }
 
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    static @NonNull Integer[] convertPrimitiveIntArray(@NonNull int[] value) {
+    static Integer[] convertPrimitiveIntArray(int[] value) {
         Integer[] returnValue = new Integer[value.length];
         for (int i = 0; i < value.length; ++i) {
             returnValue[i] = value[i];
@@ -286,7 +282,7 @@ public final class Data {
     }
 
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    static @NonNull Long[] convertPrimitiveLongArray(@NonNull long[] value) {
+    static Long[] convertPrimitiveLongArray(long[] value) {
         Long[] returnValue = new Long[value.length];
         for (int i = 0; i < value.length; ++i) {
             returnValue[i] = value[i];
@@ -295,7 +291,7 @@ public final class Data {
     }
 
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    static @NonNull Float[] convertPrimitiveFloatArray(@NonNull float[] value) {
+    static Float[] convertPrimitiveFloatArray(float[] value) {
         Float[] returnValue = new Float[value.length];
         for (int i = 0; i < value.length; ++i) {
             returnValue[i] = value[i];
@@ -304,7 +300,7 @@ public final class Data {
     }
 
     @SuppressWarnings("WeakerAccess") /* synthetic access */
-    static @NonNull Double[] convertPrimitiveDoubleArray(@NonNull double[] value) {
+    static Double[] convertPrimitiveDoubleArray(double[] value) {
         Double[] returnValue = new Double[value.length];
         for (int i = 0; i < value.length; ++i) {
             returnValue[i] = value[i];
@@ -317,16 +313,16 @@ public final class Data {
      */
     public static final class Builder {
 
-        private Map<String, Object> mValues = new HashMap<>();
+        private final Map<String, Object> mValues = new HashMap<>();
 
         /**
          * Puts a boolean into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putBoolean(@NonNull String key, boolean value) {
+        public Builder putBoolean(String key, boolean value) {
             mValues.put(key, value);
             return this;
         }
@@ -334,11 +330,11 @@ public final class Data {
         /**
          * Puts a boolean array into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putBooleanArray(@NonNull String key, @NonNull boolean[] value) {
+        public Builder putBooleanArray(String key, boolean[] value) {
             mValues.put(key, convertPrimitiveBooleanArray(value));
             return this;
         }
@@ -346,11 +342,11 @@ public final class Data {
         /**
          * Puts an integer into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putInt(@NonNull String key, int value) {
+        public Builder putInt(String key, int value) {
             mValues.put(key, value);
             return this;
         }
@@ -358,11 +354,11 @@ public final class Data {
         /**
          * Puts an integer array into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putIntArray(@NonNull String key, @NonNull int[] value) {
+        public Builder putIntArray(String key, int[] value) {
             mValues.put(key, convertPrimitiveIntArray(value));
             return this;
         }
@@ -370,11 +366,11 @@ public final class Data {
         /**
          * Puts a long into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putLong(@NonNull String key, long value) {
+        public Builder putLong(String key, long value) {
             mValues.put(key, value);
             return this;
         }
@@ -382,11 +378,11 @@ public final class Data {
         /**
          * Puts a long array into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putLongArray(@NonNull String key, @NonNull long[] value) {
+        public Builder putLongArray(String key, long[] value) {
             mValues.put(key, convertPrimitiveLongArray(value));
             return this;
         }
@@ -394,11 +390,11 @@ public final class Data {
         /**
          * Puts a float into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putFloat(@NonNull String key, float value) {
+        public Builder putFloat(String key, float value) {
             mValues.put(key, value);
             return this;
         }
@@ -406,11 +402,11 @@ public final class Data {
         /**
          * Puts a float array into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putFloatArray(@NonNull String key, @NonNull float[] value) {
+        public Builder putFloatArray(String key, float[] value) {
             mValues.put(key, convertPrimitiveFloatArray(value));
             return this;
         }
@@ -418,11 +414,11 @@ public final class Data {
         /**
          * Puts a double into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putDouble(@NonNull String key, double value) {
+        public Builder putDouble(String key, double value) {
             mValues.put(key, value);
             return this;
         }
@@ -430,11 +426,11 @@ public final class Data {
         /**
          * Puts a double array into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putDoubleArray(@NonNull String key, @NonNull double[] value) {
+        public Builder putDoubleArray(String key, double[] value) {
             mValues.put(key, convertPrimitiveDoubleArray(value));
             return this;
         }
@@ -442,11 +438,11 @@ public final class Data {
         /**
          * Puts a String into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putString(@NonNull String key, @Nullable String value) {
+        public Builder putString(String key, String value) {
             mValues.put(key, value);
             return this;
         }
@@ -454,11 +450,11 @@ public final class Data {
         /**
          * Puts a String array into the arguments.
          *
-         * @param key The key for this argument
+         * @param key   The key for this argument
          * @param value The value for this argument
          * @return The {@link Builder}
          */
-        public @NonNull Builder putStringArray(@NonNull String key, @NonNull String[] value) {
+        public Builder putStringArray(String key, String[] value) {
             mValues.put(key, value);
             return this;
         }
@@ -472,7 +468,7 @@ public final class Data {
          * @param data {@link Data} containing key-value pairs to add
          * @return The {@link Builder}
          */
-        public @NonNull Builder putAll(@NonNull Data data) {
+        public Builder putAll(Data data) {
             putAll(data.mValues);
             return this;
         }
@@ -486,7 +482,7 @@ public final class Data {
          * @param values A {@link Map} of key-value pairs to add
          * @return The {@link Builder}
          */
-        public @NonNull Builder putAll(@NonNull Map<String, Object> values) {
+        public Builder putAll(Map<String, Object> values) {
             for (Map.Entry<String, Object> entry : values.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
@@ -500,13 +496,12 @@ public final class Data {
          * Long, Float, Double, String, and array versions of each of those types.
          * Invalid types throw an {@link IllegalArgumentException}.
          *
-         * @param key A {@link String} key to add
+         * @param key   A {@link String} key to add
          * @param value A nullable {@link Object} value to add of the valid types
          * @return The {@link Builder}
          * @hide
          */
-        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-        public @NonNull Builder put(@NonNull String key, @Nullable Object value) {
+        public Builder put(String key, Object value) {
             if (value == null) {
                 mValues.put(key, null);
             } else {
@@ -546,9 +541,9 @@ public final class Data {
          * Builds a {@link Data} object.
          *
          * @return The {@link Data} object containing all key-value pairs specified by this
-         *         {@link Builder}.
+         * {@link Builder}.
          */
-        public @NonNull Data build() {
+        public Data build() {
             Data data = new Data(mValues);
             return data;
         }

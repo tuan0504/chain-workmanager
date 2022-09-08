@@ -1,7 +1,5 @@
 package com.nnt.test_worker.work;
 
-import android.support.annotation.NonNull;
-
 public final class OneTimeWorkRequest extends WorkRequest {
 
     OneTimeWorkRequest(Builder builder) {
@@ -10,17 +8,17 @@ public final class OneTimeWorkRequest extends WorkRequest {
 
     public static final class Builder extends WorkRequest.Builder<Builder, OneTimeWorkRequest> {
 
-        public Builder(@NonNull Class<? extends ListenableWorker> workerClass) {
+        public Builder(Class<? extends Worker> workerClass) {
             super(workerClass);
         }
 
         @Override
-        @NonNull OneTimeWorkRequest buildInternal() {
+        OneTimeWorkRequest buildInternal() {
             return new OneTimeWorkRequest(this);
         }
 
         @Override
-        @NonNull Builder getThis() {
+        Builder getThis() {
             return this;
         }
     }

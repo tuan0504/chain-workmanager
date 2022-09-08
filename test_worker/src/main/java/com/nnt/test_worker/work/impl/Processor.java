@@ -1,7 +1,8 @@
 package com.nnt.test_worker.work.impl;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import com.nnt.test_worker.work.impl.runnable.WorkerWrapper;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,10 +12,10 @@ import java.util.Set;
 public class Processor {
     private final Object mLock;
 
-    private Context mAppContext;
-    private WorkDatabase mWorkDatabase;
-    private Map<String, WorkerWrapper> mEnqueuedWorkMap;
-    private Set<String> mCancelledIds;
+    private final Context mAppContext;
+    private final WorkDatabase mWorkDatabase;
+    private final Map<String, WorkerWrapper> mEnqueuedWorkMap;
+    private final Set<String> mCancelledIds;
     private final AppExecutors mWorkTaskExecutor = AppExecutors.getInstance();
 
     public Processor(
@@ -27,7 +28,13 @@ public class Processor {
         mLock = new Object();
     }
 
-    public AppExecutors getWorkTaskExecutor() { return  mWorkTaskExecutor; }
+    public AppExecutors getWorkTaskExecutor() {
+        return mWorkTaskExecutor;
+    }
+
+    public void executeBackground(Runnable runnable) {
+        mWorkTaskExecutor.diskIO().execute(runnable);
+    }
 
     public boolean startWork(String id) {
         WorkerWrapper workWrapper;
@@ -77,7 +84,7 @@ public class Processor {
         }
     }
 
-    public boolean isEnqueued(@NonNull String workSpecId) {
+    public boolean isEnqueued(String workSpecId) {
         synchronized (mLock) {
             return mEnqueuedWorkMap.containsKey(workSpecId);
         }

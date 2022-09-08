@@ -3,10 +3,10 @@ package com.nnt.test_androidx.workbackground.worker;
 import android.content.Context;
 import android.util.Log;
 
-import com.nnt.test_worker.work.Data;
+import com.nnt.test_worker.work.datatypes.Data;
 import com.nnt.test_worker.work.OneTimeWorkRequest;
 import com.nnt.test_worker.work.Worker;
-import com.nnt.test_worker.work.WorkerParameters;
+import com.nnt.test_worker.work.datatypes.WorkerParameters;
 
 import java.util.Arrays;
 import java.util.List;

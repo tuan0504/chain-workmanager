@@ -1,6 +1,5 @@
 package com.nnt.test_androidx.workbackground;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
@@ -8,8 +7,8 @@ import android.util.Log;
 import com.nnt.test_androidx.workbackground.worker.SendErrorsWorker;
 import com.nnt.test_worker.work.OneTimeWorkRequest;
 import com.nnt.test_worker.work.WorkContinuation;
-import com.nnt.test_worker.work.WorkInfo;
 import com.nnt.test_worker.work.WorkManager;
+import com.nnt.test_worker.work.datatypes.WorkInfo;
 import com.nnt.test_worker.work.impl.WorkManagerImpl;
 
 import java.util.Arrays;
@@ -17,7 +16,7 @@ import java.util.List;
 
 
 public class MyWorkManager {
-    private WorkManager workManager;
+    private final WorkManager workManager;
 
     public MyWorkManager(Context context) {
         WorkManagerImpl.initialize(context);
@@ -32,13 +31,13 @@ public class MyWorkManager {
     }
 
     public void sendErrorReport() {
-        OneTimeWorkRequest worker1  = SendErrorsWorker.scheduleInstantly("worker 1");
-        OneTimeWorkRequest worker2  = SendErrorsWorker.scheduleInstantly("worker 2");
-        OneTimeWorkRequest worker3  = SendErrorsWorker.scheduleInstantly("worker 3");
-        OneTimeWorkRequest worker4  = SendErrorsWorker.scheduleInstantly("worker 4");
-        OneTimeWorkRequest worker5  = SendErrorsWorker.scheduleInstantly("worker 5");
-        OneTimeWorkRequest worker6  = SendErrorsWorker.scheduleInstantly("worker 6");
-        OneTimeWorkRequest worker7  = SendErrorsWorker.scheduleInstantly("worker 7");
+        OneTimeWorkRequest worker1 = SendErrorsWorker.scheduleInstantly("worker 1");
+        OneTimeWorkRequest worker2 = SendErrorsWorker.scheduleInstantly("worker 2");
+        OneTimeWorkRequest worker3 = SendErrorsWorker.scheduleInstantly("worker 3");
+        OneTimeWorkRequest worker4 = SendErrorsWorker.scheduleInstantly("worker 4");
+        OneTimeWorkRequest worker5 = SendErrorsWorker.scheduleInstantly("worker 5");
+        OneTimeWorkRequest worker6 = SendErrorsWorker.scheduleInstantly("worker 6");
+        OneTimeWorkRequest worker7 = SendErrorsWorker.scheduleInstantly("worker 7");
 
         WorkContinuation workList1 = workManager
                 .beginWith(Arrays.asList(worker1, worker2))
@@ -50,26 +49,18 @@ public class MyWorkManager {
         WorkContinuation workCombine = WorkContinuation.combine(Arrays.asList(workList1, workList2));
 
         workCombine.enqueue();
-
-        WorkContinuation workList3 = workManager
-                .beginWith(worker6)
-                .then(worker7);
-        workList3.enqueue();
-
-        LiveData<List<WorkInfo>> liveData = workCombine.getWorkInfosLiveData();
-        liveData.observeForever(workInfos -> {
-            assert workInfos != null;
-            Log.e("TUAN", "print State: ");
-            for (WorkInfo info : workInfos) {
-                Log.e("TUAN", "work " + info.getId() + " __ " + info.getState());
+        workCombine.getWorkInfosLiveData().addHotObserver((o, arg) -> {
+            try {
+                List<WorkInfo> infoList = (List<WorkInfo>) arg;
+                Log.e("TUAN", "print State: " + infoList.size());
+                for(WorkInfo info: infoList) {
+                    Log.e("TUAN", "id : " + info.getId() + " -- state: " + info.getState());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                workManager.cancelAllWorkByTag(SendErrorsWorker.class.getSimpleName());
-            }
-        }, 100*1000);
+        new Handler().postDelayed(workManager::cancelAllWork, 1000*300);
     }
 }

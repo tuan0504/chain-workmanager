@@ -1,31 +1,26 @@
 package com.nnt.test_worker.work;
 
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
+import com.nnt.test_worker.work.datatypes.WorkInfo;
+import com.nnt.test_worker.work.impl.WorkDatabase;
 
 import java.util.Collections;
 import java.util.List;
 
 public abstract class WorkContinuation {
 
-    public final @NonNull
-    WorkContinuation then(@NonNull OneTimeWorkRequest work) {
+    public final WorkContinuation then(OneTimeWorkRequest work) {
         return then(Collections.singletonList(work));
     }
 
-    public abstract @NonNull
-    WorkContinuation then(@NonNull List<OneTimeWorkRequest> work);
+    public abstract WorkContinuation then(List<OneTimeWorkRequest> work);
 
-    public abstract @NonNull
-    LiveData<List<WorkInfo>> getWorkInfosLiveData();
-
-    public abstract @NonNull void enqueue();
-
-    public static @NonNull
-    WorkContinuation combine(@NonNull List<WorkContinuation> continuations) {
+    public static WorkContinuation combine(List<WorkContinuation> continuations) {
         return continuations.get(0).combineInternal(continuations);
     }
 
-    protected abstract @NonNull
-    WorkContinuation combineInternal(@NonNull List<WorkContinuation> continuations);
+    protected abstract WorkContinuation combineInternal(List<WorkContinuation> continuations);
+
+    public abstract WorkDatabase.ObservableItem<List<WorkInfo>> getWorkInfosLiveData();
+
+    public abstract void enqueue();
 }

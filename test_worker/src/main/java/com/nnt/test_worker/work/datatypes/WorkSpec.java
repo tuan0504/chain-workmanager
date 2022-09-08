@@ -1,11 +1,6 @@
-package com.nnt.test_worker.work.impl;
+package com.nnt.test_worker.work.datatypes;
 
-import static com.nnt.test_worker.work.WorkInfo.State.ENQUEUED;
-
-import android.support.annotation.NonNull;
-
-import com.nnt.test_worker.work.Data;
-import com.nnt.test_worker.work.WorkInfo;
+import static com.nnt.test_worker.work.datatypes.WorkInfo.State.ENQUEUED;
 
 public class WorkSpec {
 
@@ -19,20 +14,17 @@ public class WorkSpec {
 
     public Data output = Data.EMPTY;
 
-    public int runAttemptCount;
-
-    public WorkSpec(@NonNull String id, @NonNull String workerClassName) {
+    public WorkSpec(String id, String workerClassName) {
         this.id = id;
         this.workerClassName = workerClassName;
     }
 
-    public WorkSpec(@NonNull WorkSpec other) {
+    public WorkSpec(WorkSpec other) {
         id = other.id;
         workerClassName = other.workerClassName;
         state = other.state;
         input = new Data(other.input);
         output = new Data(other.output);
-        runAttemptCount = other.runAttemptCount;
     }
 
     @Override
@@ -42,7 +34,6 @@ public class WorkSpec {
 
         WorkSpec workSpec = (WorkSpec) o;
 
-        if (runAttemptCount != workSpec.runAttemptCount) return false;
         if (!id.equals(workSpec.id)) return false;
         if (state != workSpec.state) return false;
         if (!workerClassName.equals(workSpec.workerClassName)) return false;
@@ -57,7 +48,6 @@ public class WorkSpec {
         result = 31 * result + workerClassName.hashCode();
         result = 31 * result + input.hashCode();
         result = 31 * result + output.hashCode();
-        result = 31 * result + runAttemptCount;
         return result;
     }
 

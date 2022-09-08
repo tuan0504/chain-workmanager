@@ -1,12 +1,8 @@
 package com.nnt.test_worker.work.impl.runnable;
 
-import static com.nnt.test_worker.work.WorkInfo.State.CANCELLED;
+import static com.nnt.test_worker.work.datatypes.WorkInfo.State.CANCELLED;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.util.Log;
-
-import com.nnt.test_worker.work.WorkInfo;
+import com.nnt.test_worker.work.datatypes.WorkInfo;
 import com.nnt.test_worker.work.impl.Processor;
 import com.nnt.test_worker.work.impl.WorkDatabase;
 import com.nnt.test_worker.work.impl.WorkManagerImpl;
@@ -47,23 +43,20 @@ public abstract class CancelWorkRunnable implements Runnable {
         }
     }
 
-    public static CancelWorkRunnable forId(@NonNull final UUID id, @NonNull final WorkManagerImpl workManagerImpl) {
+    public static CancelWorkRunnable forId(final UUID id, final WorkManagerImpl workManagerImpl) {
         return new CancelWorkRunnable() {
-            @WorkerThread
+
             @Override
             void runInternal() {
-                Log.e("TUAN", "CancelWork " + id);
                 cancel(workManagerImpl, id.toString());
             }
         };
     }
 
-    public static CancelWorkRunnable forTag(@NonNull final String tag, @NonNull final WorkManagerImpl workManagerImpl) {
+    public static CancelWorkRunnable forTag(final String tag, final WorkManagerImpl workManagerImpl) {
         return new CancelWorkRunnable() {
-            @WorkerThread
             @Override
             void runInternal() {
-                Log.e("TUAN", "CancelWork " + tag);
                 WorkDatabase workDatabase = workManagerImpl.getWorkDatabase();
                 List<String> workSpecIds = workDatabase.getWorkIdByTag(tag);
                 for (String workSpecId : workSpecIds) {
@@ -74,13 +67,12 @@ public abstract class CancelWorkRunnable implements Runnable {
     }
 
     public static CancelWorkRunnable forName(
-            @NonNull final String name,
-            @NonNull final WorkManagerImpl workManagerImpl) {
+            final String name,
+            final WorkManagerImpl workManagerImpl) {
         return new CancelWorkRunnable() {
-            @WorkerThread
+
             @Override
             void runInternal() {
-                Log.e("TUAN", "CancelWork " + name);
                 WorkDatabase workDatabase = workManagerImpl.getWorkDatabase();
                 List<String> workSpecIds = workDatabase.getWorkIdByName(name);
                 for (String workSpecId : workSpecIds) {
@@ -90,12 +82,11 @@ public abstract class CancelWorkRunnable implements Runnable {
         };
     }
 
-    public static CancelWorkRunnable forAll(@NonNull final WorkManagerImpl workManagerImpl) {
+    public static CancelWorkRunnable forAll(final WorkManagerImpl workManagerImpl) {
         return new CancelWorkRunnable() {
-            @WorkerThread
+
             @Override
             void runInternal() {
-                Log.e("TUAN", "CancelWork all");
                 WorkDatabase workDatabase = workManagerImpl.getWorkDatabase();
                 List<String> workSpecIds = workDatabase.getAllUnfinishedWork();
                 for (String workSpecId : workSpecIds) {

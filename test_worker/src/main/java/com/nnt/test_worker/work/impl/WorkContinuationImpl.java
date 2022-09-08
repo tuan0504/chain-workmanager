@@ -1,15 +1,11 @@
 package com.nnt.test_worker.work.impl;
 
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
-
-import com.nnt.test_worker.work.ExistingWorkPolicy;
+import com.nnt.test_worker.work.CombineContinuationsWorker;
 import com.nnt.test_worker.work.OneTimeWorkRequest;
 import com.nnt.test_worker.work.WorkContinuation;
-import com.nnt.test_worker.work.WorkInfo;
 import com.nnt.test_worker.work.WorkRequest;
+import com.nnt.test_worker.work.datatypes.ExistingWorkPolicy;
+import com.nnt.test_worker.work.datatypes.WorkInfo;
 import com.nnt.test_worker.work.impl.runnable.EnqueueRunnable;
 
 import java.util.ArrayList;
@@ -18,12 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * A concrete implementation of {@link WorkContinuation}.
- *
- * @hide
- */
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WorkContinuationImpl extends WorkContinuation {
 
     private final WorkManagerImpl mWorkManagerImpl;
@@ -36,12 +26,12 @@ public class WorkContinuationImpl extends WorkContinuation {
 
     private boolean mEnqueued;
 
-    @NonNull
+
     public WorkManagerImpl getWorkManagerImpl() {
         return mWorkManagerImpl;
     }
 
-    @Nullable
+
     public String getName() {
         return mName;
     }
@@ -50,12 +40,12 @@ public class WorkContinuationImpl extends WorkContinuation {
         return mExistingWorkPolicy;
     }
 
-    @NonNull
+
     public List<? extends WorkRequest> getWork() {
         return mWork;
     }
 
-    @NonNull
+
     public List<String> getIds() {
         return mIds;
     }
@@ -77,8 +67,8 @@ public class WorkContinuationImpl extends WorkContinuation {
     }
 
     WorkContinuationImpl(
-            @NonNull WorkManagerImpl workManagerImpl,
-            @NonNull List<? extends WorkRequest> work) {
+            WorkManagerImpl workManagerImpl,
+            List<? extends WorkRequest> work) {
         this(
                 workManagerImpl,
                 null,
@@ -88,18 +78,18 @@ public class WorkContinuationImpl extends WorkContinuation {
     }
 
     WorkContinuationImpl(
-            @NonNull WorkManagerImpl workManagerImpl,
+            WorkManagerImpl workManagerImpl,
             String name,
             ExistingWorkPolicy existingWorkPolicy,
-            @NonNull List<? extends WorkRequest> work) {
+            List<? extends WorkRequest> work) {
         this(workManagerImpl, name, existingWorkPolicy, work, null);
     }
 
-    WorkContinuationImpl(@NonNull WorkManagerImpl workManagerImpl,
+    WorkContinuationImpl(WorkManagerImpl workManagerImpl,
                          String name,
                          ExistingWorkPolicy existingWorkPolicy,
-                         @NonNull List<? extends WorkRequest> work,
-                         @Nullable List<WorkContinuationImpl> parents) {
+                         List<? extends WorkRequest> work,
+                         List<WorkContinuationImpl> parents) {
         mWorkManagerImpl = workManagerImpl;
         mName = name;
         mExistingWorkPolicy = existingWorkPolicy;
@@ -120,29 +110,21 @@ public class WorkContinuationImpl extends WorkContinuation {
     }
 
     @Override
-    public @NonNull
-    WorkContinuation then(List<OneTimeWorkRequest> work) {
+    public WorkContinuation then(List<OneTimeWorkRequest> work) {
         return new WorkContinuationImpl(mWorkManagerImpl, mName,
                 ExistingWorkPolicy.KEEP, work, Collections.singletonList(this));
     }
 
     @Override
-    public @NonNull
-    LiveData<List<WorkInfo>> getWorkInfosLiveData() {
-        return mWorkManagerImpl.getWorkInfosById(mAllIds);
-    }
-
-    @Override
-    public @NonNull void enqueue() {
+    public void enqueue() {
         if (!mEnqueued) {
             EnqueueRunnable runnable = new EnqueueRunnable(this);
-            mWorkManagerImpl.getProcessor().getWorkTaskExecutor().diskIO().execute (runnable);
+            mWorkManagerImpl.getProcessor().executeBackground(runnable);
         }
     }
 
-    protected @NonNull
-    WorkContinuation combineInternal(
-            @NonNull List<WorkContinuation> continuations) {
+    protected WorkContinuation combineInternal(
+            List<WorkContinuation> continuations) {
         OneTimeWorkRequest combinedWork = new OneTimeWorkRequest.Builder(CombineContinuationsWorker.class).build();
 
         List<WorkContinuationImpl> parents = new ArrayList<>(continuations.size());
@@ -154,13 +136,18 @@ public class WorkContinuationImpl extends WorkContinuation {
                 ExistingWorkPolicy.KEEP, Collections.singletonList(combinedWork), parents);
     }
 
+    @Override
+    public WorkDatabase.ObservableItem<List<WorkInfo>> getWorkInfosLiveData() {
+        return mWorkManagerImpl.getWorkInfosByIDs(mAllIds);
+    }
+
     public boolean hasCycles() {
         return hasCycles(this, new HashSet<String>());
     }
 
     private static boolean hasCycles(
-            @NonNull WorkContinuationImpl continuation,
-            @NonNull Set<String> visited) {
+            WorkContinuationImpl continuation,
+            Set<String> visited) {
 
         visited.addAll(continuation.getIds());
         Set<String> prerequisiteIds = prerequisitesFor(continuation);

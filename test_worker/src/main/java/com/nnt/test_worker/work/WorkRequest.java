@@ -1,8 +1,7 @@
 package com.nnt.test_worker.work;
 
-import android.support.annotation.NonNull;
-
-import com.nnt.test_worker.work.impl.WorkSpec;
+import com.nnt.test_worker.work.datatypes.Data;
+import com.nnt.test_worker.work.datatypes.WorkSpec;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,29 +9,29 @@ import java.util.UUID;
 
 public abstract class WorkRequest {
 
-    private @NonNull UUID mId;
-    private @NonNull WorkSpec mWorkSpec;
-    private @NonNull Set<String> mTags;
+    private final UUID mId;
+    private final WorkSpec mWorkSpec;
+    private final Set<String> mTags;
 
-    protected WorkRequest(@NonNull UUID id, @NonNull WorkSpec workSpec, @NonNull Set<String> tags) {
+    protected WorkRequest(UUID id, WorkSpec workSpec, Set<String> tags) {
         mId = id;
         mWorkSpec = workSpec;
         mTags = tags;
     }
 
-    public @NonNull UUID getId() {
+    public UUID getId() {
         return mId;
     }
 
-    public @NonNull String getStringId() {
+    public String getStringId() {
         return mId.toString();
     }
 
-    public @NonNull WorkSpec getWorkSpec() {
+    public WorkSpec getWorkSpec() {
         return mWorkSpec;
     }
 
-    public @NonNull Set<String> getTags() {
+    public Set<String> getTags() {
         return mTags;
     }
 
@@ -42,23 +41,23 @@ public abstract class WorkRequest {
         WorkSpec mWorkSpec;
         Set<String> mTags = new HashSet<>();
 
-        Builder(@NonNull Class<? extends ListenableWorker> workerClass) {
+        Builder(Class<? extends Worker> workerClass) {
             mId = UUID.randomUUID();
             mWorkSpec = new WorkSpec(mId.toString(), workerClass.getName());
             addTag(workerClass.getName());
         }
 
-        public final @NonNull B setInputData(@NonNull Data inputData) {
+        public final B setInputData(Data inputData) {
             mWorkSpec.input = inputData;
             return getThis();
         }
 
-        public final @NonNull B addTag(@NonNull String tag) {
+        public final B addTag(String tag) {
             mTags.add(tag);
             return getThis();
         }
 
-        public final @NonNull W build() {
+        public final W build() {
             W returnValue = buildInternal();
             // Create a new id and WorkSpec so this WorkRequest.Builder can be used multiple times.
             mId = UUID.randomUUID();
@@ -67,8 +66,8 @@ public abstract class WorkRequest {
             return returnValue;
         }
 
-        abstract @NonNull W buildInternal();
+        abstract W buildInternal();
 
-        abstract @NonNull B getThis();
+        abstract B getThis();
     }
 }

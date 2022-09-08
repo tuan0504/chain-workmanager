@@ -1,6 +1,4 @@
-package com.nnt.test_worker.work;
-
-import android.support.annotation.NonNull;
+package com.nnt.test_worker.work.datatypes;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,15 +7,16 @@ import java.util.UUID;
 
 public final class WorkerParameters {
 
-    private @NonNull UUID mId;
-    private @NonNull Data mInputData;
-    private @NonNull Set<String> mTags;
-    private int mRunAttemptCount;
+    private final UUID mId;
+    private final
+    Data mInputData;
+    private final Set<String> mTags;
+    private final int mRunAttemptCount;
 
     public WorkerParameters(
-            @NonNull UUID id,
-            @NonNull Data inputData,
-            @NonNull Collection<String> tags,
+            UUID id,
+            Data inputData,
+            Collection<String> tags,
             int runAttemptCount) {
         mId = id;
         mInputData = inputData;
@@ -25,15 +24,15 @@ public final class WorkerParameters {
         mRunAttemptCount = runAttemptCount;
     }
 
-    public @NonNull UUID getId() {
+    public UUID getId() {
         return mId;
     }
 
-    public @NonNull Data getInputData() {
+    public Data getInputData() {
         return mInputData;
     }
 
-    public @NonNull Set<String> getTags() {
+    public Set<String> getTags() {
         return mTags;
     }
 

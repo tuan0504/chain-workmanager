@@ -1,9 +1,6 @@
-package com.nnt.test_worker.work.impl.inputmerge;
+package com.nnt.test_worker.work.inputmerge;
 
-import android.support.annotation.NonNull;
-
-import com.nnt.test_worker.work.Data;
-import com.nnt.test_worker.work.InputMerger;
+import com.nnt.test_worker.work.datatypes.Data;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
@@ -13,8 +10,7 @@ import java.util.Map;
 public final class ArrayCreatingInputMerger extends InputMerger {
 
     @Override
-    public @NonNull
-    Data merge(@NonNull List<Data> inputs) {
+    public Data merge(List<Data> inputs) {
         Data.Builder output = new Data.Builder();
         Map<String, Object> mergedValues = new HashMap<>();
 

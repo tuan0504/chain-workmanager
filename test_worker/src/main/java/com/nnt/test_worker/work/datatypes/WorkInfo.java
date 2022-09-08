@@ -1,45 +1,33 @@
-package com.nnt.test_worker.work;
+package com.nnt.test_worker.work.datatypes;
 
-import android.support.annotation.NonNull;
-
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 public final class WorkInfo {
 
-    private @NonNull UUID mId;
-    private @NonNull State mState;
-    private @NonNull Data mOutputData;
-    private @NonNull Set<String> mTags;
+    private final UUID mId;
+    private final State mState;
+    private final Data mOutputData;
 
     public WorkInfo(
-            @NonNull UUID id,
-            @NonNull State state,
-            @NonNull Data outputData,
-            @NonNull List<String> tags) {
+            UUID id,
+            State state,
+            Data outputData) {
         mId = id;
         mState = state;
         mOutputData = outputData;
-        mTags = new HashSet<>(tags);
     }
 
-    public @NonNull UUID getId() {
+    public UUID getId() {
         return mId;
     }
 
-    public @NonNull State getState() {
+    public State getState() {
         return mState;
     }
 
-    public @NonNull Data getOutputData() {
+    public Data getOutputData() {
         return mOutputData;
-    }
-
-    public @NonNull Set<String> getTags() {
-        return mTags;
     }
 
     @Override
@@ -51,10 +39,7 @@ public final class WorkInfo {
 
         if (!Objects.equals(mId, that.mId)) return false;
         if (mState != that.mState) return false;
-        if (!Objects.equals(mOutputData, that.mOutputData)) {
-            return false;
-        }
-        return Objects.equals(mTags, that.mTags);
+        return Objects.equals(mOutputData, that.mOutputData);
     }
 
     @Override
@@ -62,17 +47,15 @@ public final class WorkInfo {
         int result = mId.hashCode();
         result = 31 * result + mState.hashCode();
         result = 31 * result + mOutputData.hashCode();
-        result = 31 * result + mTags.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
         return "WorkInfo{"
-                +   "mId='" + mId + '\''
-                +   ", mState=" + mState
-                +   ", mOutputData=" + mOutputData
-                +   ", mTags=" + mTags
+                + "mId='" + mId + '\''
+                + ", mState=" + mState
+                + ", mOutputData=" + mOutputData
                 + '}';
     }
 

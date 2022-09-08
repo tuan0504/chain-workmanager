@@ -1,4 +1,4 @@
-package com.nnt.test_worker.work;
+package com.nnt.test_worker.work.datatypes;
 
 public enum ExistingWorkPolicy {
 

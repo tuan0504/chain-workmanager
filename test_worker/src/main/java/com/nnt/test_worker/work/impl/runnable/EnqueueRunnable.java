@@ -1,23 +1,21 @@
 package com.nnt.test_worker.work.impl.runnable;
 
-import static com.nnt.test_worker.work.ExistingWorkPolicy.KEEP;
-import static com.nnt.test_worker.work.WorkInfo.State.BLOCKED;
-import static com.nnt.test_worker.work.WorkInfo.State.CANCELLED;
-import static com.nnt.test_worker.work.WorkInfo.State.ENQUEUED;
-import static com.nnt.test_worker.work.WorkInfo.State.FAILED;
-import static com.nnt.test_worker.work.WorkInfo.State.SUCCEEDED;
+import static com.nnt.test_worker.work.datatypes.ExistingWorkPolicy.KEEP;
+import static com.nnt.test_worker.work.datatypes.WorkInfo.State.BLOCKED;
+import static com.nnt.test_worker.work.datatypes.WorkInfo.State.CANCELLED;
+import static com.nnt.test_worker.work.datatypes.WorkInfo.State.ENQUEUED;
+import static com.nnt.test_worker.work.datatypes.WorkInfo.State.FAILED;
+import static com.nnt.test_worker.work.datatypes.WorkInfo.State.SUCCEEDED;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.nnt.test_worker.work.ExistingWorkPolicy;
-import com.nnt.test_worker.work.WorkInfo;
 import com.nnt.test_worker.work.WorkRequest;
+import com.nnt.test_worker.work.datatypes.ExistingWorkPolicy;
+import com.nnt.test_worker.work.datatypes.WorkInfo;
+import com.nnt.test_worker.work.datatypes.WorkSpec;
 import com.nnt.test_worker.work.impl.WorkContinuationImpl;
 import com.nnt.test_worker.work.impl.WorkDatabase;
 import com.nnt.test_worker.work.impl.WorkManagerImpl;
-import com.nnt.test_worker.work.impl.WorkSpec;
 
 import java.util.List;
 import java.util.Set;
@@ -25,13 +23,13 @@ import java.util.Set;
 public class EnqueueRunnable implements Runnable {
 
     private final WorkContinuationImpl mWorkContinuation;
-    public EnqueueRunnable(@NonNull WorkContinuationImpl workContinuation) {
+
+    public EnqueueRunnable(WorkContinuationImpl workContinuation) {
         mWorkContinuation = workContinuation;
     }
 
     @Override
     public void run() {
-        Log.e("TUAN", "EnqueueWork ");
         try {
             if (mWorkContinuation.hasCycles()) {
                 throw new IllegalStateException(String.format("WorkContinuation has cycles (%s)", mWorkContinuation));
@@ -52,14 +50,14 @@ public class EnqueueRunnable implements Runnable {
     public void scheduleWorkInBackground() {
         WorkManagerImpl workManager = mWorkContinuation.getWorkManagerImpl();
         List<String> work = workManager.getWorkDatabase().getAllUnfinishedWork(mWorkContinuation.getAllIds());
-        for(String workId : work) {
-            if(workManager.getWorkDatabase().getState(workId) == ENQUEUED) {
+        for (String workId : work) {
+            if (workManager.getWorkDatabase().getState(workId) == ENQUEUED) {
                 workManager.startWork(workId);
             }
         }
     }
 
-    private static boolean processContinuation(@NonNull WorkContinuationImpl workContinuation) {
+    private static boolean processContinuation(WorkContinuationImpl workContinuation) {
         boolean needsScheduling = false;
         List<WorkContinuationImpl> parents = workContinuation.getParents();
         if (parents != null) {
@@ -73,7 +71,7 @@ public class EnqueueRunnable implements Runnable {
         return needsScheduling;
     }
 
-    private static boolean enqueueContinuation(@NonNull WorkContinuationImpl workContinuation) {
+    private static boolean enqueueContinuation(WorkContinuationImpl workContinuation) {
         Set<String> prerequisiteIds = WorkContinuationImpl.prerequisitesFor(workContinuation);
         boolean needsScheduling = enqueueWorkWithPrerequisites(
                 workContinuation.getWorkManagerImpl(),
@@ -93,7 +91,7 @@ public class EnqueueRunnable implements Runnable {
      */
     private static boolean enqueueWorkWithPrerequisites(
             WorkManagerImpl workManagerImpl,
-            @NonNull List<? extends WorkRequest> workList,
+            List<? extends WorkRequest> workList,
             String[] prerequisiteIds,
             String name,
             ExistingWorkPolicy existingWorkPolicy) {
@@ -128,7 +126,7 @@ public class EnqueueRunnable implements Runnable {
 
         if (shouldApplyExistingWorkPolicy) {
             // Get everything with the unique tag.
-            List<String> existingWorkSpecId= workDatabase.getWorkIdByName(name);
+            List<String> existingWorkSpecId = workDatabase.getWorkIdByName(name);
 
             if (!existingWorkSpecId.isEmpty()) {
                 if (existingWorkPolicy == KEEP) {
@@ -171,7 +169,7 @@ public class EnqueueRunnable implements Runnable {
     }
 
     private static void saveDatabase(WorkDatabase workDatabase, WorkSpec workSpec,
-                  Boolean hasPrerequisite, String[] prerequisiteIds, WorkRequest work, String name ) {
+                                     Boolean hasPrerequisite, String[] prerequisiteIds, WorkRequest work, String name) {
         workDatabase.insertWorkSpec(workSpec);
         if (hasPrerequisite) {
             for (String prerequisiteId : prerequisiteIds) {

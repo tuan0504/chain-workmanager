@@ -2,7 +2,6 @@ package com.nnt.test_worker.work.impl;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -10,8 +9,9 @@ import java.util.concurrent.Executors;
 public class AppExecutors {
 
     private static AppExecutors instance;
-    public static AppExecutors getInstance(){
-        if(instance == null) {
+
+    public static AppExecutors getInstance() {
+        if (instance == null) {
             instance = new AppExecutors();
         }
         return instance;
@@ -47,10 +47,10 @@ public class AppExecutors {
     }
 
     private static class MainThreadExecutor implements Executor {
-        private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+        private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
         @Override
-        public void execute(@NonNull Runnable command) {
+        public void execute(Runnable command) {
             mainThreadHandler.post(command);
         }
     }
