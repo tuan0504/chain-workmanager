@@ -49,7 +49,7 @@ public class MyWorkManager {
         WorkContinuation workCombine = WorkContinuation.combine(Arrays.asList(workList1, workList2));
 
         workCombine.enqueue();
-        workCombine.getWorkInfosLiveData().addHotObserver((o, arg) -> {
+        workCombine.getWorkInfosLiveData().addObserver((o, arg) -> {
             try {
                 List<WorkInfo> infoList = (List<WorkInfo>) arg;
                 Log.e("TUAN", "print State: " + infoList.size());
