@@ -111,8 +111,7 @@ public class WorkContinuationImpl extends WorkContinuation {
 
     @Override
     public WorkContinuation then(List<OneTimeWorkRequest> work) {
-        return new WorkContinuationImpl(mWorkManagerImpl, mName,
-                ExistingWorkPolicy.KEEP, work, Collections.singletonList(this));
+        return new WorkContinuationImpl(mWorkManagerImpl, mName, mExistingWorkPolicy, work, Collections.singletonList(this));
     }
 
     @Override

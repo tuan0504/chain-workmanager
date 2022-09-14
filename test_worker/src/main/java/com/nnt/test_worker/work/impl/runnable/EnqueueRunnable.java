@@ -138,10 +138,7 @@ public class EnqueueRunnable implements Runnable {
                 } else {
                     CancelWorkRunnable.forName(name, workManagerImpl).run();
                     needsScheduling = true;
-
-                    for (String id : existingWorkSpecId) {
-                        workDatabase.deleteWorkSpec(id);
-                    }
+                    workDatabase.deleteWorkName(name);
                 }
             }
         }

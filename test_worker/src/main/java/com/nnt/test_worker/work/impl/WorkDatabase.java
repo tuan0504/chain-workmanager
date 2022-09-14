@@ -7,7 +7,6 @@ import com.nnt.test_worker.work.datatypes.WorkInfo;
 import com.nnt.test_worker.work.datatypes.WorkSpec;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -23,20 +22,16 @@ public class WorkDatabase {
     private final List<Pair<String, String>> workTagsDao = new ArrayList<>(); //first : Tag Name , second: ID
     private final ConcurrentHashMap<String, List<String>> workNameDao = new ConcurrentHashMap<>(); //first : name , second: workSpecId
 
+    public WorkDatabase() {
+    }
+
     //begin: WorkSpec Dao
     public WorkSpec getWorkSpec(String workSpecId) {
         return workSpecsDao.get(workSpecId);
     }
 
-    public void deleteWorkSpec(String workSpecId) {
-        workSpecsDao.remove(workSpecId);
-    }
-
     public void insertWorkSpec(WorkSpec workSpec) {
         workSpecsDao.put(workSpec.id, workSpec);
-    }
-
-    public WorkDatabase() {
     }
 
     public void setState(WorkInfo.State state, String workSpecId) {
@@ -166,15 +161,28 @@ public class WorkDatabase {
 
     //begin : WorkName Dao
     public List<String> getWorkIdByName(String uniqueWorkName) {
-        List<String> result = workNameDao.get(uniqueWorkName);
-        if (result == null) {
-            return new ArrayList();
+        synchronized (workNameDao) {
+            List<String> result = workNameDao.get(uniqueWorkName);
+            if (result == null) {
+                return new ArrayList();
+            }
+            return new CopyOnWriteArrayList<>(result);
         }
-        return result;
+    }
+
+    public void deleteWorkName(String name) {
+        workSpecsDao.remove(name);
     }
 
     public void insertWorkName(String name, String workSpecId) {
-        workNameDao.put(name, Collections.singletonList(workSpecId));
+        synchronized (workNameDao) {
+            List<String> workIds = workNameDao.get(name);
+            if (workIds == null) {
+                workIds = new ArrayList();
+            }
+            workIds.add(workSpecId);
+            workNameDao.put(name, workIds);
+        }
     }
     //end: WorkName Dao
 
